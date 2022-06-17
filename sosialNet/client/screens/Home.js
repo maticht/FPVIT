@@ -1,31 +1,32 @@
 import React, {useContext} from 'react';
 import {StyleSheet, Text, View, SafeAreaView, Image} from "react-native";
 import {AuthContext} from "../context/auth";
-import FooterTabs from "../components/nav/FooterTabs";
+import FooterTabHome from "../components/nav/FooterTabs/FooterTabHome";
 import HeaderTabs from "../components/nav/HeaderTabs";
 
 
 const Home = () => {
     const [state, setState] = useContext(AuthContext);
-    const name = JSON.stringify(state.user.name).replace(/"/g,'');
-    const email = JSON.stringify(state.user.email).replace(/"/g,'');
+    // const name = JSON.stringify(state.user.name).replace(/"/g,'');
+    // const email = JSON.stringify(state.user.email).replace(/"/g,'');
 
 
     return(
         <SafeAreaView style={styles.homeContainer}>
             <View style={styles.userContainer}>
                 <View style={styles.headerContainer}>
-                    <Text style={styles.nameStyle}>{name}</Text>
+                    {/*<Text style={styles.nameStyle}>{JSON.stringify(state.user.name).replace(/"/g,'')}</Text>*/}
+                    <Text style={{justifyContent:'center',fontSize:25}}>Home</Text>
                     <HeaderTabs/>
                 </View>
                 <View>
-                    <Image source={require('../assets/footNavLogo/userLogo.png')}
-                           style={styles.FootNavLogo}/>
-                    <Text style={styles.emailStyle}>{email}</Text>
+                    {/*<Image source={require('../assets/footNavLogo/userLogo.png')}*/}
+                    {/*       style={styles.FootNavLogo}/>*/}
+                    <Text style={styles.emailStyle}>{JSON.stringify(state, null, 4).replace(/{|}|"|,|/gi,'')}</Text>
                 </View>
 
             </View>
-            <FooterTabs/>
+            <FooterTabHome/>
         </SafeAreaView>
     );
 };

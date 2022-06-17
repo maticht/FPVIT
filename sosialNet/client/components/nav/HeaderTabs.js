@@ -3,13 +3,12 @@ import {StyleSheet, View, TouchableOpacity, Text} from "react-native";
 import {AuthContext} from "../../context/auth";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-const HeaderTabs = ({navigation}) => {
+const HeaderTabs = () => {
     const [state, setState] = useContext(AuthContext);
     console.log(state)
     const signOut = async () => {
-        setState({user: null, token:''});
+        await setState({user: null, token:''});
         await AsyncStorage.removeItem("@auth");
-        navigation.navigate('Signin')
     }
 
     return(
