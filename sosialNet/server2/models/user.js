@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+const {string} = require("joi");
 const Schema = mongoose.Schema
 
 const User = new Schema({
@@ -19,6 +20,14 @@ const User = new Schema({
     fileSrc: {
         type: String,
         default: ''
+    },
+    role: {
+        type: String,
+        default: "Subscriber"
+    },
+    image: {
+        public_id: "",
+        url: ""
     }
 })
 module.exports = mongoose.model('user', User)

@@ -9,6 +9,13 @@ exports.valid = (data) => {
     })
     return schema.validate(data)
 }
+exports.putValid = (data) => {
+    const schema = Joi.object({
+        name: Joi.string().min(1).max(50).required(),
+        email: Joi.string().min(1).max(50).required(),
+    })
+    return schema.validate(data)
+}
 
 // exports.viewAllUsersAuth = (req, res, next) => {
 //     try{

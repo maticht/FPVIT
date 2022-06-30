@@ -1,52 +1,46 @@
-import React, {useState} from "react";
+import React, {useContext} from "react";
 import {StyleSheet, View, TouchableOpacity, Image} from "react-native";
-import {useNavigation, useRoute} from "@react-navigation/native";
+import {useNavigation} from "@react-navigation/native";
+import {AuthContext} from "../../../context/auth";
 
 export default function FooterTabsAdd() {
+    const [state, setState] = useContext(AuthContext);
     const navigation = useNavigation();
-    const route = useRoute();
     return (
         <View>
             <View style={styles.FootNav}>
-                <TouchableOpacity
-                    onPress={() => navigation.navigate('Home')}
-                    screenName='Home'
-                    routeName={route.name}
-                >
+                <TouchableOpacity onPress={() => navigation.navigate('Home')}>
                     <Image
                         source={require('../../../assets/footNavLogo/homeLogo.png')}
                         style={styles.FootNavLogo}
                     />
                 </TouchableOpacity>
-                <TouchableOpacity
-                    onPress={() => navigation.navigate('Search')}
-                    screenName='Search'
-                    routeName={route.name}
-                >
+                <TouchableOpacity onPress={() => navigation.navigate('Search')}>
                     <Image
                         source={require('../../../assets/footNavLogo/searchLogo.png')}
                         style={styles.FootNavLogo}
                     />
                 </TouchableOpacity>
-                <TouchableOpacity
-                    onPress={() => {navigation.navigate('Add');}}
-                    screenName="Add"
-                    routeName={route.name}
-                >
+                <TouchableOpacity onPress={() => {navigation.navigate('Add');}}>
                     <Image
                         source={require('../../../assets/footNavLogo/AAdd.png')}
                         style={styles.FootNavLogo}
                     />
                 </TouchableOpacity>
-                <TouchableOpacity
-                    onPress={() => navigation.navigate('Account')}
-                    screenName='Account'
-                    routeName={route.name}
-                >
-                    <Image
-                        source={require('../../../assets/footNavLogo/userLogo.png')}
-                        style={styles.FootNavLogo}
-                    />
+                <TouchableOpacity onPress={() => navigation.navigate('Account')}>
+                    <View style={styles.userLogo}>
+                        {state.user.image.url ? (
+                            <Image
+                                source={{uri: state.user.image.url}}
+                                style={styles.FootNavLogoUser}
+                            />
+                        ) : (
+                            <Image
+                                source={require('../../../assets/footNavLogo/LogoUser.png')}
+                                style={styles.FootNavLogo}
+                            />
+                        )}
+                    </View>
                 </TouchableOpacity>
             </View>
         </View>
@@ -59,11 +53,17 @@ const styles = StyleSheet.create({
         justifyContent:'space-around',
         borderTopWidth: 0.6,
         paddingVertical:12,
-        borderColor:'#BDBDBD',
+        borderColor:'#D8D8D8',
     },
     FootNavLogo: {
         width: 25,
         height: 25,
         resizeMode: 'contain'
+    },
+    FootNavLogoUser: {
+        width: 25,
+        height: 25,
+        resizeMode: 'contain',
+        borderRadius:15,
     },
 });

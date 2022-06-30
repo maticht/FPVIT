@@ -4,18 +4,15 @@ import {KeyboardAwareScrollView} from "react-native-keyboard-aware-scroll-view";
 import UserInput from "../components/auth/userInput";
 import SubmitBtn from "../components/auth/SubmitBtn";
 import SignLogo from '../components/auth/signLogo';
-import {API} from "../config";
 import axios from "axios";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {AuthContext} from "../context/auth";
-
 
 const Signin = ({navigation}) => {
     const[email, setEmail] = useState('');
     const[password, setPassword] = useState('');
     const[loading, setLoading] = useState(false);
     const[state, setState] = useContext(AuthContext)
-
     const handleSubmit = async () => {
         setLoading(true);
         if(!email || !password){
@@ -36,20 +33,19 @@ const Signin = ({navigation}) => {
                 setState(data);
                 await AsyncStorage.setItem('@auth', JSON.stringify(data))
                 setLoading(false);
-                console.log('SignIn request =>',data)
-                alert('Sign in successful');
+                // console.log('SignIn response =>',data)
+                // alert('Sign in successful');
                 navigation.navigate('Home')
             }
-
         }catch (err) {
             console.log(err)
             setLoading(false);
         }
     }
-    const label = async () => {
+    const getUser = async () => {
         await AsyncStorage.getItem("@auth");
     };
-    label()
+    getUser().then(r => {})
 
     return (
         <KeyboardAwareScrollView contentContainerStyle={styles.container}>
@@ -86,13 +82,14 @@ const Signin = ({navigation}) => {
             </View>
         </KeyboardAwareScrollView>
     )
-}
+};
+
 const styles = StyleSheet.create({
     signInContainer: {
         zIndex:10,
         borderTopWidth: 1,
         paddingVertical:12,
-        borderColor:'#BDBDBD',
+        borderColor:'#D8D8D8',
         alignItems:'center',
     },
     signInText: {

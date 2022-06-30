@@ -7,12 +7,11 @@ export default function Search () {
         <View style={styles.homeContainer}>
             <View>
                 <Text>Search Screen</Text>
-
             </View>
             <FooterTabsSearch/>
         </View>
-
     )};
+
 const styles = StyleSheet.create({
     homeContainer: {
         flex:1,
