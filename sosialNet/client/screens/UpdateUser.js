@@ -31,8 +31,8 @@ const UpdateUser = ({navigation}) => {
             setImage(image);
         }
     }, [state])
-    const handleSubmit = async () => {
 
+    const handleSubmit = async () => {
         try {
             setLoading(true)
             const {data} = await axios.post(`/update-password`,{name, email, password});
@@ -58,7 +58,6 @@ const UpdateUser = ({navigation}) => {
 
     const handleUpload = async () => {
         let permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
-        // console.log(permissionResult);
         if(permissionResult.granted === false){
         }
         let pikerResult = await ImagePicker.launchImageLibraryAsync({
@@ -74,7 +73,6 @@ const UpdateUser = ({navigation}) => {
             const {data} = await axios.post('/upload-image',{
                 image: base64Images,
             });
-            console.log("UUUUUUploaded",data);
             const as = JSON.parse(await AsyncStorage.getItem('@auth'));
             as.user = data;
             await AsyncStorage.setItem('@auth', JSON.stringify(as));
@@ -193,5 +191,4 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
     },
 });
-
 export default UpdateUser;

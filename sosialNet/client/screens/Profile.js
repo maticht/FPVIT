@@ -1,111 +1,98 @@
 import React, {useContext, useEffect, useState} from 'react';
 import {StyleSheet, Text, View, Image, ScrollView, TouchableOpacity} from "react-native";
-import FooterTabHome from "../components/nav/FooterTabs/FooterTabHome";
-import {PostContext} from "../context/post";
+import {useRoute} from "@react-navigation/native";
 import {AuthContext} from "../context/auth";
+import {PostContext} from "../context/post";
 import axios from "axios";
-import dayjs from 'dayjs';
-import {useNavigation} from "@react-navigation/native";
-import Search from "../components/Search1";
+import dayjs from "dayjs";
 
-const Home = () => {
-    const [users, setUsers] = useContext(AuthContext);
-    const [posts, setPosts] = useContext(PostContext);
-    const[load, setLoad] = useState(true);
-    const navigation = useNavigation();
-
+const Profile = ({navigation}) => {
+    const [auth, setAuth] = useContext(AuthContext);
+    const [post, setPost] = useContext(PostContext);
+    const [userPosts, setUserPosts] = useState([]);
+    const [userProfile, setUserProfile] = useState({});
+    const route = useRoute()
+    const routeParamsId = route?.params?._id
     useEffect(() => {
-        viewPosts()
+        const fetchUserProfile = async (userId) => {
+            try{
+                const {data} = await axios.get(`/user-profile/${routeParamsId}`);
+                setUserPosts(data.posts.reverse())
+                setUserProfile(data.profile)
+                console.log('user profile data', data.profile)
+            }catch (err){
+                console.log(err)
+            }
+        };
+        routeParamsId ? fetchUserProfile(routeParamsId) : fetchUserProfile(auth.user._id);
     }, []);
-    const viewPosts = async () => {
-        const {data} = await axios.get('/');
-        setPosts(data.reverse())
-        setLoad(false);
-    }
 
-    const handleLike = async (post) => {
-        const {data} = await axios.put('/like', {postId: post._id});
-        setPosts((posts) => {
-            const index = posts.findIndex((p) => p._id === post._id);
-            posts[index] = data;
-            return[...posts];
-        });
-    };
+    return (
+        <View>
+            <ScrollView
+                showsVerticalScrollIndicator={false}>
 
-    const handleUnLike = async (post) => {
-        const {data} = await axios.put('/unlike', {postId: post._id});
-        setPosts((posts) => {
-            const index = posts.findIndex((p) => p._id === post._id);
-            posts[index] = data;
-            return[...posts]
-        })
-    };
-
-        if(load){
-            return (
-                <View style={styles.loadContainer}>
-                    <Image
-                        source={require('../assets/footNavLogo/instagram-2016-6.png')}
-                        style={styles.loadInst}
-                    />
-                    <View style={styles.loadCont}>
-                        <Text style={{color:'#666', marginBottom:-20}}>from</Text>
-                        <Image
-                            source={require('../assets/footNavLogo/meta-logoeps.com_-768x768.png')}
-                            style={styles.loadMeta}
-                        />
+                <View style={styles.mainInfoBlock}>
+                    <View style={styles.mainUserInfoBlock}>
+                        <View>
+                            {userProfile?.image?.url ? (
+                                <Image
+                                    source={{uri: userProfile?.image?.url}}
+                                    style={styles.userImgLog}
+                                />
+                            ) : (
+                                <Image
+                                    source={require('../assets/footNavLogo/LogoUser.png')}
+                                    style={styles.userImgLog}
+                                />
+                            )}
+                        </View>
+                        <View style={styles.postsFollowers}>
+                            <Text style={styles.postsFollowersNum}>{userPosts.length}</Text>
+                            <Text>Posts</Text>
+                        </View>
+                        <View style={styles.postsFollowers}>
+                            <Text style={styles.postsFollowersNum}>0</Text>
+                            <Text>Followers</Text>
+                        </View>
+                        <View style={styles.postsFollowers}>
+                            <Text style={styles.postsFollowersNum}>0</Text>
+                            <Text>Following</Text>
+                        </View>
+                    </View>
+                    <Text style={styles.emailStyle}>{userProfile.name}</Text>
+                    <View style={styles.sameUserBtn}>
+                        <TouchableOpacity
+                            onPress={() => alert('Added to imaginary friends')}
+                            style={styles.followBtn}>
+                            <Text style={styles.followTxt}>Follow</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            style={styles.submitBtn}>
+                            <Text style={styles.submitTxt}>Message</Text>
+                        </TouchableOpacity>
                     </View>
                 </View>
-            )
-        }
 
-    return(
-        <View style={styles.homeContainer}>
-            <View style={styles.headerContainer}>
-                <Image
-                    source={require('../assets/Instagram_logo.svg.png')}
-                    style={styles.userImgLogo}
-                />
-                <TouchableOpacity style={styles.inputFld}>
-                    <Image
-                        source={require('../assets/footNavLogo/messg.png')}
-                        style={styles.messageBtn}
-                    />
-                </TouchableOpacity>
 
-            </View>
-            <ScrollView
-                showsVerticalScrollIndicator={false}
-                style={styles.userContainer}>
-                {posts && posts.map((post) =>
+                {userPosts && userPosts.map((post) =>
                     <View key={post._id}>
                         <View style={styles.postBlock}>
                             <View style={styles.undrPostBtn}>
-                                <TouchableOpacity onPress={() => {
-                                    {users?.user?._id === post.postedBy._id ?
-                                        navigation.navigate('Account')
-                                         :
-                                        navigation.navigate('Profile', {
-                                            email: post.postedBy?.email,
-                                            _id: post.postedBy?._id
-                                        })
-                                    }
-                                }}>
-                                    <View style={styles.userPostInfoBlock}>
-                                        {post.postedBy.image.url ? (
-                                            <Image
-                                                source={{uri: post.postedBy.image.url}}
-                                                style={styles.userAvaImgPw}
-                                            />
-                                        ) : (
-                                            <Image
-                                                source={require('../assets/footNavLogo/LogoUser.png')}
-                                                style={styles.userAvaImgPw}
-                                            />
-                                        )}
-                                        <Text style={styles.userPostEmail}>{post.postedBy.email}</Text>
-                                    </View>
-                                </TouchableOpacity>
+                                <View style={styles.userPostInfoBlock}>
+                                    {post.postedBy.image.url ? (
+                                        <Image
+                                            source={{uri: post.postedBy.image.url}}
+                                            style={styles.userAvaImgPw}
+                                        />
+                                    ) : (
+                                        <Image
+                                            source={require('../assets/footNavLogo/LogoUser.png')}
+                                            style={styles.userAvaImgPw}
+                                        />
+                                    )}
+                                    <Text style={styles.userPostEmail}>{post.postedBy.email}</Text>
+                                </View>
                                 <TouchableOpacity>
                                     <Image
                                         source={require('../assets/footNavLogo/treePoints.png')}
@@ -121,7 +108,7 @@ const Home = () => {
                                 <View>
                                     <View style={styles.undrPost}>
                                         <View style={styles.undrPostBtn}>
-                                            {post?.likes?.includes(users?.user?._id) ? (
+                                            {userPosts?.likes?.includes(auth?.user?._id) ? (
                                                 <TouchableOpacity onPress={() => handleUnLike(post)}>
                                                     <Image
                                                         source={require('../assets/footNavLogo/onLike.png')}
@@ -168,14 +155,93 @@ const Home = () => {
                     </View>
                 )}
             </ScrollView>
-            <View>
-                <FooterTabHome/>
-            </View>
         </View>
-    );
+    )
 };
 
 const styles = StyleSheet.create({
+    sameUserBtn: {
+        flexDirection:'row',
+        justifyContent:'space-between',
+    },
+    userImgLog: {
+        width: 85,
+        height: 85,
+        resizeMode: 'contain',
+        marginBottom:3,
+        borderRadius:50
+    },
+    followBtn:{
+        height:32,
+        width:'49%',
+        backgroundColor: '#0080FF',
+        marginTop:14,
+        borderRadius:4,
+        paddingHorizontal:14,
+        marginRight:10,
+        alignItems: 'center',
+        justifyContent:"center",
+    },
+    submitBtn: {
+        borderWidth: 0.9,
+        height:32,
+        width:'49%',
+        borderColor:'#BABABA',
+        marginTop:14,
+        borderRadius:4,
+        paddingHorizontal:17,
+        alignItems: 'center',
+        justifyContent:"center",
+    },
+    followTxt: {
+        fontWeight: '500',
+        fontSize:15,
+        color:'#fff'
+    },
+    submitTxt: {
+        fontWeight: '500',
+        fontSize:15,
+        color:'#000'
+    },
+    addMenu: {
+        flexDirection: 'row',
+        alignItems:'center',
+    },
+    titleBar: {
+        alignItems:'center',
+        flexDirection: 'row',
+        justifyContent:'space-between',
+        paddingLeft: 16,
+        paddingRight: 12,
+        borderBottomWidth: 0.6,
+        borderColor:'#D8D8D8',
+    },
+    mainInfoBlock: {
+        marginTop: 20,
+        paddingHorizontal: 16,
+        borderBottomWidth: 0.6,
+        paddingBottom:11,
+        borderColor:'#D8D8D8',
+    },
+    mainUserInfoBlock: {
+        flexDirection:'row',
+        alignItems:'center',
+        justifyContent:'space-between',
+        marginRight:10
+    },
+    FootNavLogo: {
+        width: 25,
+        height: 25,
+        resizeMode: 'contain',
+        marginRight:15,
+    },
+    postsFollowersNum: {
+        fontSize:17,
+        fontWeight:'700'
+    },
+    postsFollowers: {
+        alignItems:'center'
+    },
     userContainer: {
     },
     homeContainer: {
@@ -183,14 +249,12 @@ const styles = StyleSheet.create({
         marginTop:45,
     },
     emailStyle: {
-      fontSize:15,
+        fontSize:15,
         fontWeight:'500'
     },
     headerContainer:{
         flexDirection:'row',
         alignItems:'center',
-        marginLeft:10,
-        marginRight:5,
         justifyContent:'space-between',
     },
     nameStyle: {
@@ -201,33 +265,10 @@ const styles = StyleSheet.create({
         width: 115,
         height: 48,
         resizeMode: 'contain',
-    },
-    loadInst: {
-        justifyContent:'center',
-        width: 80,
-        height: 80,
-        resizeMode: 'contain',
-    },
-    loadMeta: {
-        justifyContent:'center',
-        width: 100,
-        height: 80,
-        resizeMode: 'contain',
-    },
-    loadContainer: {
-        marginTop:320,
-        marginBottom:30,
-        flex:1,
-        alignItems:'center',
-        justifyContent:'space-between'
-    },
-    loadCont: {
-        alignItems:'center',
-        justifyContent:'space-between',
-        marginBottom:-35,
+        marginLeft:12
     },
     undrPostBtn: {
-      flexDirection:'row',
+        flexDirection:'row',
         justifyContent:'space-between'
     },
     undrPost: {
@@ -271,12 +312,10 @@ const styles = StyleSheet.create({
 
     },
     messageBtn: {
-        width: 30,
-        height: 30,
-
+        width: 23,
+        height: 23,
         resizeMode: 'contain',
         marginRight:10,
-        marginLeft:100,
     },
     like1Btn: {
         width: 23,
@@ -312,9 +351,5 @@ const styles = StyleSheet.create({
         marginTop:5,
         color: '#9d9d9d'
     },
-    inputFld: {
-        flexDirection:'row'
-    }
 });
-
-export default Home;
+export default Profile;

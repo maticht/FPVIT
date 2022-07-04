@@ -1,30 +1,14 @@
-const Router = require('express')
-const router = new Router()
-// const controller = require('./controller')
-// const {viewAllUsersAuth} = require('./mid/middleware')
-const load = require('./mid/fileMiddleware')
+const Router = require('express');
+const router = new Router();
 const jwt = require("express-jwt");
-const checkJwt = jwt({secret: 'key', algorithms:['HS256']})
-const {
-    updateUser,
-    uploadImage,
-    log,
-    reg,
-    getAllUsers,
-    getUsersByEmail,
-    deleteUsersByEmail,
-    overwriteUsersByEmail
-} = require('./controller');
-
-
+const checkJwt = jwt({secret: 'key', algorithms:['HS256']});
+const {getAllUsers, userProfile, updateUser, uploadImage, log, reg,} = require('./controller');
 
 router.post('/reg',reg)
     .post('/log',log)
     .post('/upload-image', checkJwt, uploadImage)
     .post('/update-password', checkJwt, updateUser)
-    .get('/1',getAllUsers)
-    .get('/:email',getUsersByEmail)
-    .delete('/:email',deleteUsersByEmail)
-    .put('/:email', load.single('file'),overwriteUsersByEmail)
+    .get('/user-profile/:userId/', userProfile)
+    .get('/getAllUsers',getAllUsers)
 
 module.exports = router

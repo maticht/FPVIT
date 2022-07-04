@@ -3,16 +3,15 @@ import {StyleSheet, View, Image} from "react-native";
 
 const CircleLogo = ({children}) => (
     <View>
-        <View>
-            {children ? (children) :
-                (<Image
-                    source={require('../../assets/footNavLogo/LogoUser.png')}
-                    style={styles.userImgLogo}
-                />)
-            }
-        </View>
+        {children ? (children) :
+            (<Image
+                source={require('../../assets/footNavLogo/LogoUser.png')}
+                style={styles.userImgLogo}
+            />)
+        }
     </View>
-)
+);
+
 const styles = StyleSheet.create({
     userImgLogo: {
         width: 115,

@@ -13,7 +13,7 @@ const Signup = ({navigation}) => {
     const[email,setEmail] = useState('');
     const[password,setPassword] = useState('');
     const[loading,setLoading] = useState(false);
-    const[state, setState] = useContext(AuthContext)
+    const[state, setState] = useContext(AuthContext);
 
     const handleSubmit = async () => {
         setLoading(true);
@@ -36,8 +36,6 @@ const Signup = ({navigation}) => {
                 setState(data);
                 await AsyncStorage.setItem('@auth', JSON.stringify(data))
                 setLoading(false);
-                // console.log('SignUp response =>',data)
-                // alert('Sign up successful');
                 navigation.navigate('Home')
             }
         }catch (err) {
@@ -89,9 +87,9 @@ const Signup = ({navigation}) => {
                     style={styles.signInText}>Log in</Text></Text>
             </View>
         </KeyboardAwareScrollView>
-
     )
 }
+
 const styles = StyleSheet.create({
     signInContainer: {
         zIndex:10,
@@ -118,5 +116,4 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
     },
 });
-
 export default Signup;

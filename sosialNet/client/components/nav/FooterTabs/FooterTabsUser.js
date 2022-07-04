@@ -46,6 +46,7 @@ export default function FooterTabsUser() {
         </View>
     )
 };
+
 const styles = StyleSheet.create({
     FootNav: {
         flexDirection:'row',

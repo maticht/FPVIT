@@ -12,7 +12,8 @@ const Signin = ({navigation}) => {
     const[email, setEmail] = useState('');
     const[password, setPassword] = useState('');
     const[loading, setLoading] = useState(false);
-    const[state, setState] = useContext(AuthContext)
+    const[state, setState] = useContext(AuthContext);
+
     const handleSubmit = async () => {
         setLoading(true);
         if(!email || !password){
@@ -33,8 +34,6 @@ const Signin = ({navigation}) => {
                 setState(data);
                 await AsyncStorage.setItem('@auth', JSON.stringify(data))
                 setLoading(false);
-                // console.log('SignIn response =>',data)
-                // alert('Sign in successful');
                 navigation.navigate('Home')
             }
         }catch (err) {

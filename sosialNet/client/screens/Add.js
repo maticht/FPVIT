@@ -28,7 +28,6 @@ const Add = ({navigation}) => {
     }
     const upload = async () => {
         let permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
-        console.log(permissionResult);
         if(permissionResult.granted === false){
         }
         let pikerR = await ImagePicker.launchImageLibraryAsync({
@@ -51,13 +50,12 @@ const Add = ({navigation}) => {
                 image: uploadI,
                 title
             });
-        try {
-            console.log('DatA =>', data);
-            setPosts([data, ...posts]);
+        try {;
+            setPosts([data,  ...posts]);
             setLoading(false);
             setTimeout(() => {
-                alert('sucsess post');
-                navigation.navigate('Account');
+                alert('sucсess post');
+                navigation.navigate('Home');
             }, 50);
         }catch (err){
             console.log(err);
@@ -88,7 +86,6 @@ const Add = ({navigation}) => {
                             />
                         )}
                     </PostLogo>
-
                     <View style={styles.addPostContainer}>
                         <View style={styles.inputContainer}>
                             <TouchableOpacity
@@ -113,7 +110,6 @@ const Add = ({navigation}) => {
                         handleSubmit={handleSubmit}
                     />
                 </View>
-
             </ScrollView>
             <FooterTabsAdd/>
         </View>

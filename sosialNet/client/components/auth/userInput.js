@@ -1,5 +1,5 @@
 import React from 'react';
-import {StyleSheet, Text, View, TextInput, } from "react-native";
+import {StyleSheet, View, TextInput, } from "react-native";
 
 const UserInput = ({name,
                        value,
@@ -23,6 +23,7 @@ const UserInput = ({name,
         </View>
     )
 }
+
 const styles = StyleSheet.create({
     inputFld: {
         borderWidth: 1,
@@ -37,5 +38,4 @@ const styles = StyleSheet.create({
         marginHorizontal:28,
     },
 });
-
 export default UserInput;

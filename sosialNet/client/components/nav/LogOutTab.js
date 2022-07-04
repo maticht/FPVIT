@@ -5,16 +5,15 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const LogOutTab = () => {
     const [state, setState] = useContext(AuthContext);
-    // console.log(state)
     const signOut = async () => {
         await setState({user: null, token:''});
         await AsyncStorage.removeItem("@auth");
     }
     return(
-        <View style={styles.signOut}>
+        <View>
             <TouchableOpacity onPress={signOut}>
                 <Image
-                    source={require('../../assets/footNavLogo/burger.png')}
+                    source={require('../../assets/footNavLogo/logOut.png')}
                     style={styles.signOutText}
                 />
             </TouchableOpacity>
@@ -23,11 +22,11 @@ const LogOutTab = () => {
 };
 const styles = StyleSheet.create({
     signOutText: {
-        width: 25,
-        height: 25,
+        width: 33,
+        height: 33,
         resizeMode: 'contain',
         marginRight:2,
-        marginLeft:5
+
     },
 });
 

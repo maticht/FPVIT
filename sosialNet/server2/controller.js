@@ -1,11 +1,9 @@
 const User = require('./models/user')
+const Post = require('./models/post')
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const {valid} = require('./mid/middleware')
 const cloudinary = require('cloudinary')
-const moment = require("moment");
-const axios = require("axios");
-// const {nanoid} = require("nanoid")
 
 cloudinary.config({
     cloud_name: 'maticht12345',
@@ -13,33 +11,12 @@ cloudinary.config({
     api_secret: '1Pz4aF1QxcosM4hU6fwRS2bwlWY'
 })
 
-// function generateToken(_id){
-//     return jwt.sign({ _id: user._id }, 'key');
-// }
-
-const hashPassword = (password) => {
-    return new Promise((resolve, reject) => {
-        bcrypt.genSalt(10, (err, salt) => {
-            if (err) {
-                reject(err);
-            }
-            bcrypt.hash(password, salt, (err, hash) => {
-                if (err) {
-                    reject(err);
-                }
-                resolve(hash);
-            });
-        });
-    });
-};
-
 exports.reg = async (req, res) => {
     const {error} = valid(req.body)
     if(error){
         return res.json({error: 'Enter data'})
     }
     const {name, email, password} = req.body
-    const fileSrc = req.file ? req.file.path : ''
     const checkMailMatch = await User.findOne({email})
     if(checkMailMatch){
         return res.json({
@@ -47,16 +24,15 @@ exports.reg = async (req, res) => {
         })
     }
     const hashPas = bcrypt.hashSync(password,10);
-    const user = new User({name, email, password: hashPas, fileSrc, image: {
+    const user = new User({name, email, password: hashPas, image: {
             public_id: "",
             url: ""
         }})
     await user.save()
     const token = jwt.sign({_id: user._id},
         'key',
-        {expiresIn: '7d',}
+        {expiresIn: '21d',}
     );
-    console.log('good' + res.status)
     console.log(user, token)
     return res.json({user,token})
 }
@@ -83,21 +59,6 @@ exports.getAllUsers = async(req,res) => {
     res.json(users)
 }
 
-exports.getUsersByEmail = async(req,res) => {
-    const user = await User.find({email: req.params.email})
-    res.json(user)
-}
-
-exports.deleteUsersByEmail = async(req,res) => {
-    await User.deleteOne({email: req.params.email})
-    res.end(`User with id ${req.params.email} has been deleted`)
-}
-
-exports.overwriteUsersByEmail = async(req,res) => {
-    await User.updateOne({email: req.params.email},
-        {$set: {name: req.body.name, email: req.body.email}})
-    res.end('Users has been overwritten')
-}
 
 exports.uploadImage = async (req,res) => {
     console.log('upload image >> user._id', req.user._id);
@@ -143,7 +104,21 @@ exports.updateUser = async (req,res) => {
             return res.json(user);
         }
     }catch (err){
+        console.log(err);
+    }
+};
+
+exports.userProfile = async (req,res) => {
+    try{
+        const profile = await User.findById(req.params.userId).select('name _id email image.url');
+        const posts = await Post.find({postedBy: req.params.userId}).populate('postedBy', 'email image');
+        console.log(profile)
+        return res.json({profile, posts})
+    }catch(err){
         console.log(err)
     }
-
+}
+module.exports.getAllUsers = async(req,res) => {
+    const users = await User.find().select('name _id email image')
+    res.json({users})
 }

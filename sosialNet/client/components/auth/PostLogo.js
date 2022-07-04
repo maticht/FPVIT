@@ -3,16 +3,15 @@ import {StyleSheet, View, Image} from "react-native";
 
 const PostLogo = ({children}) => (
     <View>
-        <View>
-            {children ? (children) :
-                (<Image
-                    source={require('../../assets/footNavLogo/NanPost.png')}
-                    style={styles.userImg}
-                />)
-            }
-        </View>
+        {children ? (children) :
+            (<Image
+                source={require('../../assets/footNavLogo/NanPost.png')}
+                style={styles.userImg}
+            />)
+        }
     </View>
-)
+);
+
 const styles = StyleSheet.create({
     userImg: {
         width: '100%',
